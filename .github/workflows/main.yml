@@ -1,0 +1,72 @@
+name: CI
+    
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "0 0 * * 1"   # every monday
+
+jobs:
+  x64_build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.1.3
+      
+    - name: Run msbuild
+      run: msbuild -p:configuration=release -p:platform=x64 -p:platformToolset=v142
+      
+    - name: Get current time
+      uses: josStorer/get-current-time@v2.0.2
+      id: current-time
+      with:
+        format: YYYYMMDD_HHmmss
+        utcOffset: "+08:00"
+      
+    - name : Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: x64_${{ steps.current-time.outputs.formattedTime }}_SlothBP
+        path: |
+          Bin/x64/*.dp64
+
+    - name : Upload lib files
+      uses: actions/upload-artifact@v3
+      with:
+        name: x64_${{ steps.current-time.outputs.formattedTime }}_lib
+        path: Bin/x64/*.lib
+
+  x86_build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.1.3
+      
+    - name: Run msbuild
+      run: msbuild -p:configuration=release -p:platform=x86 -p:platformToolset=v142
+      
+    - name: Get current time
+      uses: josStorer/get-current-time@v2.0.2
+      id: current-time
+      with:
+        format: YYYYMMDD_HHmmss
+        utcOffset: "+08:00"
+      
+    - name : Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: x86_${{ steps.current-time.outputs.formattedTime }}_SlothBP
+        path: |
+          Bin/x32/*.dp32
+
+    - name : Upload lib files
+      uses: actions/upload-artifact@v3
+      with:
+        name: x86_${{ steps.current-time.outputs.formattedTime }}_lib
+        path: Bin/x32/*.lib
