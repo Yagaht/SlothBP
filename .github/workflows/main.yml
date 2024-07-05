@@ -32,9 +32,9 @@ jobs:
     - name: Create release
       run: .\release.bat
       
-    - name : Upload artifact
+    - name : Upload Zipfile Artifact
       uses: actions/upload-artifact@v3
       with:
-        name: SlothBP-${{ steps.current-time.outputs.formattedTime }}.zip
+        name: SlothBP-${{ steps.current-time.outputs.formattedTime }}
         path: |
           release\*
